@@ -1,16 +1,28 @@
 pipeline {
-   agent any
+   agent {
+       docker {
+           image 'docker:cli'
+           args '-v /var/run/docker.sock:/var/run/docker.sock'
+       }
+   }
+   environment {
+       IMAGE_NAME = 'addition-image'
+       TAG = 'v1'
+   }
    stages {
-       stage('Checkout') {
+       stage('Checkout Code') {
            steps {
-               // Pull code from Git
                checkout scm
            }
        }
-       stage('Run Addition Script') {
+       stage('Build Docker Image') {
            steps {
-               // Run the shell script
-               sh './add.sh'
+               sh "docker build -t ${IMAGE_NAME}:${TAG} ."
+           }
+       }
+       stage('Run Docker Container') {
+           steps {
+               sh "docker run --rm ${IMAGE_NAME}:${TAG}"
            }
        }
    }
