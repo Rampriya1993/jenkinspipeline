@@ -1,10 +1,5 @@
 pipeline {
-   agent {
-       docker {
-           image 'docker:cli'
-           args '-v /var/run/docker.sock:/var/run/docker.sock'
-       }
-   }
+   agent any
    environment {
        IMAGE_NAME = 'addition-image'
        TAG = 'v1'
